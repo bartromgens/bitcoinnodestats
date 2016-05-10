@@ -68,6 +68,7 @@ d3.json("/static/media/data_usage.json", function(data) {
         .on("mouseout", function() { focus.style("display", "none"); })
         .on("mousemove", mousemove);                       // **********
 
+    // focus is based on http://www.d3noob.org/2014/07/my-favourite-tooltip-method-for-line.html
     var focus = svg.append("g")                                // **********
         .style("display", "none");
 
