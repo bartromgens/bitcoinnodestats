@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="container">
+
+  <p>connections: {{ stats.connection_count }}</p>
+  <p>recevied: {{ stats.sent_mb|floatformat:1  }} MiB</p>
+  <p>sent: {{ stats.received_mb|floatformat:1 }} MiB</p>
+  <p>node version: {{ node.version }}</p>
+  <p>{{ stats.n_data_points }} data points</p>
+  <p>latest data point: {{ stats.latest_data_point }} </p>
+
+</div>
+{% endblock %}

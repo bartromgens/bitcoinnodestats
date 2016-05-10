@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+{% load bootstrap3 %}
+
+<html>
+
+<head>
+
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Bitcoin Node Stats</title>
+
+  {# Load CSS and JavaScript #}
+  {% bootstrap_css %}
+
+  <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
+
+  <script src="{% bootstrap_jquery_url %}" type="text/javascript"></script>
+  {% bootstrap_javascript %}
+
+  {% block headcontent %}{% endblock %}
+
+</head>
+
+
+<body>
+  <!-- navbar -->
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/"><b>BitcoinNodeStats</b></a>
+      </div>
+
+      <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+          <li>
+            <!--<a href="/skills/">Skills</a>-->
+          </li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right">
+        {% if request.user.is_authenticated %}
+          <!--<li><a>{{ request.user.username }}</a></li>-->
+          {% if request.user.is_staff %}
+          <li><a href="/admin" target="_blank">admin</a></li>
+          {% endif %}
+        {% endif %}
+
+        </ul>
+      </div>
+      <!--/.nav-collapse -->
+    </div>
+  </div>
+
+  {% block content %}{% endblock %}
+
+</body>
+
+</html>

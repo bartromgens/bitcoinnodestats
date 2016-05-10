@@ -1,0 +1,19 @@
+*.pyc
+
+# Setuptools distribution folder.
+/dist/
+
+# Python egg metadata, regenerated from source files by setuptools.
+/*.egg-info
+
+.idea
+data/
+lib/
+env/
+
+*.sqlite3
+*.log
+
+# secret local files
+bitcoinnodestats/local_settings.py
+bitcoinnodestats/static/media
