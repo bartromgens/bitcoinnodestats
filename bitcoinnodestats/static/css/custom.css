@@ -5,19 +5,3 @@ html, body {
 body {
     padding-top: 80px;
 }
-
-.fixed-height-skill {
-  padding: 2px;
-  overflow: hidden;
-  height: 6em;
-}
-
-.skill-tile {
-  padding: 0.1em 0.3em 0.1em 0.3em;
-  height: 100%;
-  width: 100%;
-}
-
-.checkbutton {
-    font-size: 1.5em;
-}
