@@ -1,3 +1,6 @@
+import json
+from datetime import datetime
+
 from django.db import models
 
 from jsonfield import JSONField
@@ -31,6 +34,7 @@ class NodeStats(object):
         datapoints = RawNodeData.objects.all().order_by('datetime_created')
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
+        self.json_points = []
         for i in range(0, datapoints.count()-1):
             next_point = datapoints[i+1]
             current_point = datapoints[i]
@@ -41,6 +45,17 @@ class NodeStats(object):
                 continue
             self.total_sent_bytes += sent_diff_bytes
             self.total_received_bytes += received_diff_bytes
+            self.json_points.append({
+                'sent_mb': self.total_sent_bytes/1024/1024,
+                'datetime': datetime.fromtimestamp(current_point.get_time_millis()/1000).strftime('%Y-%m-%d %H:%M:%S')
+                # 'datetime': current_point.get_time_millis()/1000000 - 1462.90*1000
+            })
+
+        out = json.dumps(self.json_points, indent=4, sort_keys=True)
+        with open('data_usage.json', 'w') as fileout:
+            fileout.write(out)
+
+
 
 
 class Node(object):
