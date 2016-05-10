@@ -9,14 +9,13 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        latest_data = RawNodeData.get_latest_node_data()
         context['stats'] = NodeStats()
         context['node'] = Node()
         return context
 
 
-class DataUsageView(TemplateView):
-    template_name = "data_usage_plot.html"
+class PlotsViews(TemplateView):
+    template_name = "plots.html"
 
-    def get(self, request):
-        return super().get(request)
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
