@@ -1,7 +1,9 @@
+import os
 import json
 from datetime import datetime
 
 from django.db import models
+from django.conf import settings
 
 from jsonfield import JSONField
 
@@ -52,7 +54,7 @@ class NodeStats(object):
             })
 
         out = json.dumps(self.json_points, indent=4, sort_keys=True)
-        with open('data_usage.json', 'w') as fileout:
+        with open(os.path.join(settings.MEDIA_ROOT, 'data_usage.json'), 'w') as fileout:
             fileout.write(out)
 
 

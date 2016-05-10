@@ -15,7 +15,7 @@ var xAxis = d3.svg.axis().scale(x)
     .orient("bottom").ticks(5);
 
 var yAxis = d3.svg.axis().scale(y)
-    .orient("left").ticks(5);
+    .orient("left").ticks(10);
 
 // Define the line
 var valueline = d3.svg.line()
@@ -32,7 +32,7 @@ var svg = d3.select("body")
               "translate(" + margin.left + "," + margin.top + ")");
 
 // Get the data
-d3.json("/static/js/data_usage.json", function(data) {
+d3.json("/static/media/data_usage.json", function(data) {
     data.forEach(function(d) {
         d.datetime = parseDate(d.datetime);
     });
