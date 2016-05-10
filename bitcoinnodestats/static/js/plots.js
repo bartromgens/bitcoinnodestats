@@ -177,6 +177,7 @@ var create_plot = function(json_filepath, title) {
 };
 
 create_plot("/static/media/connections.json", "connections")
-create_plot("/static/media/data_usage.json", "data_usage")
+create_plot("/static/media/data_sent.json", "data_sent")
+create_plot("/static/media/data_received.json", "data_received")
 create_plot("/static/media/upload_speed.json", "download_speed")
 create_plot("/static/media/download_speed.json", "upload_speed")

@@ -40,7 +40,8 @@ class NodeStats(object):
         datapoints = RawNodeData.objects.all().order_by('datetime_created')
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
-        json_points = []
+        json_points_sent = []
+        json_points_received= []
         for i in range(0, datapoints.count()-1):
             next_point = datapoints[i+1]
             current_point = datapoints[i]
@@ -51,18 +52,28 @@ class NodeStats(object):
                 continue
             self.total_sent_bytes += sent_diff_bytes
             self.total_received_bytes += received_diff_bytes
-            json_points.append({
+            json_points_sent.append({
                 'datetime': datetime.fromtimestamp(current_point.get_time_millis()/1000).strftime('%Y-%m-%d %H:%M:%S'),
                 'y': self.total_sent_bytes/1024/1024,
-                # 'datetime': current_point.get_time_millis()/1000000 - 1462.90*1000
+            })
+            json_points_received.append({
+                'datetime': datetime.fromtimestamp(current_point.get_time_millis() / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                'y': self.total_received_bytes / 1024 / 1024,
             })
 
         json_data = {
-            'points': json_points,
+            'points': json_points_sent,
             'xlabel': 'Time',
             'ylabel': 'Total data sent [MB]',
         }
-        NodeStats.write_json(json_data, 'data_usage.json')
+        NodeStats.write_json(json_data, 'data_sent.json')
+
+        json_data = {
+            'points': json_points_received,
+            'xlabel': 'Time',
+            'ylabel': 'Total data received [MB]',
+        }
+        NodeStats.write_json(json_data, 'data_received.json')
 
     def calc_hourly_bandwith(self):
         datapoints = RawNodeData.objects.all().order_by('datetime_created')
@@ -123,9 +134,7 @@ class NodeStats(object):
     @staticmethod
     def write_json(json_data, filename):
         filepath = os.path.join(local_settings.MEDIA_ROOT, filename)
-        print(filepath)
         with open(filepath, 'w') as fileout:
-            print('test')
             json.dump(json_data, fileout, indent=4, sort_keys=True)
 
 
