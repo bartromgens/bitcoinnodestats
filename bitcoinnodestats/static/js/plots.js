@@ -2,7 +2,6 @@
 var create_plot = function(json_filepath, title) {
     // Set the dimensions of the canvas / graph
     plot_width = parseInt(d3.select("body").select("#plot").style('width'), 10);
-    console.log(plot_width)
     var margin = {top: 60, right: 10, bottom: 50, left: 60};
     var width = plot_width - margin.left - margin.right;
     var height = Math.min(plot_width/2.0 - margin.top - margin.bottom, 300);
@@ -88,7 +87,7 @@ var create_plot = function(json_filepath, title) {
         // place the value at the intersection
         focus.append("text")
             .attr("class", "y1")
-            .style("stroke", "white")
+            .style("stroke", "black")
             .style("stroke-width", "3.5px")
             .style("opacity", 0.8)
             .attr("dx", 8)
@@ -96,13 +95,14 @@ var create_plot = function(json_filepath, title) {
 
         focus.append("text")
             .attr("class", "y2")
+            .style("fill", "white")
             .attr("dx", 8)
             .attr("dy", "-.3em");
 
         // place the date at the intersection
         focus.append("text")
             .attr("class", "y3")
-            .style("stroke", "white")
+            .style("stroke", "black")
             .style("stroke-width", "3.5px")
             .style("opacity", 0.8)
             .attr("dx", 8)
@@ -110,6 +110,7 @@ var create_plot = function(json_filepath, title) {
 
         focus.append("text")
             .attr("class", "y4")
+            .style("fill", "white")
             .attr("dx", 8)
             .attr("dy", "1em");
 
@@ -128,17 +129,17 @@ var create_plot = function(json_filepath, title) {
 
             var formatDate = d3.time.format("%d %b %H:%M");
 
-            var tooltip_x = x(d.datetime) + 15;
-            var tooltip_y = y(d.y) + 30;
+            var tooltip_x = x(d.datetime) - 100;
+            var tooltip_y = y(d.y) - 30;
             var translate_str = "translate(" + tooltip_x + "," + tooltip_y + ")";
 
             focus.select("text.y1")
                 .attr("transform", translate_str)
-                .text(Math.round(d.y));
+                .text(Math.round(d.y) + ' ' + json.unit);
 
             focus.select("text.y2")
                 .attr("transform", translate_str)
-                .text(Math.round(d.y));
+                .text(Math.round(d.y) + ' ' + json.unit);
 
             focus.select("text.y3")
                 .attr("transform", translate_str)
@@ -201,8 +202,8 @@ var create_plot = function(json_filepath, title) {
     });
 };
 
-create_plot("/static/media/connections.json", "connections")
-create_plot("/static/media/data_sent.json", "data_sent")
-create_plot("/static/media/data_received.json", "data_received")
-create_plot("/static/media/upload_speed.json", "download_speed")
-create_plot("/static/media/download_speed.json", "upload_speed")
+create_plot("/static/media/connections.json", "connections");
+create_plot("/static/media/data_sent.json", "data_sent");
+create_plot("/static/media/data_received.json", "data_received");
+create_plot("/static/media/upload_speed.json", "download_speed");
+create_plot("/static/media/download_speed.json", "upload_speed");

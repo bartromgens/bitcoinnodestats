@@ -166,7 +166,8 @@ class NodeStats(object):
             'points': json_points_sent,
             'xlabel': 'Time',
             'ylabel': 'Data [MB]',
-            'title': 'Total Outgoing Data'
+            'title': 'Total Outgoing Data',
+            'unit': 'MB'
         }
         NodeStats.write_json(json_data, 'data_sent.json')
 
@@ -174,7 +175,8 @@ class NodeStats(object):
             'points': json_points_received,
             'xlabel': 'Time',
             'ylabel': 'Data [MB]',
-            'title': 'Total Incoming Data'
+            'title': 'Total Incoming Data',
+            'unit': 'MB'
         }
         NodeStats.write_json(json_data, 'data_received.json')
 
@@ -182,7 +184,8 @@ class NodeStats(object):
             'points': json_points_upload,
             'xlabel': 'Time',
             'ylabel': 'Upload [kB/s]',
-            'title': 'Upload Speed'
+            'title': 'Upload Speed',
+            'unit': 'kB/s'
         }
         NodeStats.write_json(json_data, 'upload_speed.json')
 
@@ -190,7 +193,8 @@ class NodeStats(object):
             'points': json_points_download,
             'xlabel': 'Time',
             'ylabel': 'Download [kB/s]',
-            'title': 'Download Speed'
+            'title': 'Download Speed',
+            'unit': 'kB/s'
         }
         NodeStats.write_json(json_data, 'download_speed.json')
 
@@ -198,7 +202,8 @@ class NodeStats(object):
             'points': json_connection_count,
             'xlabel': 'Time',
             'ylabel': 'Connections [-]',
-            'title': 'Connection Count'
+            'title': 'Connection Count',
+            'unit': ''
         }
         NodeStats.write_json(json_data, 'connections.json')
 
