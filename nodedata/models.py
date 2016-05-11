@@ -1,13 +1,14 @@
 import os
 import json
 from datetime import datetime
-
 from django.db import models
-from bitcoinnodestats import local_settings
 
 from jsonfield import JSONField
 
 import bitcoin.rpc
+from bitcoin.core import b2lx
+
+from bitcoinnodestats import local_settings
 
 
 def create_node_data():
@@ -64,6 +65,12 @@ class Node(object):
         self.peers = []
         if data_latest.peerinfo_json:
             self.peers = data_latest.peerinfo_json
+        proxy = bitcoin.rpc.Proxy()
+        bestblockhash = proxy.getbestblockhash()
+        best_block = proxy.getblock(bestblockhash)
+        best_block = proxy.call('getblock', b2lx(bestblockhash))
+        print(best_block)
+        self.best_block = best_block
 
 
 class NodeStats(object):
