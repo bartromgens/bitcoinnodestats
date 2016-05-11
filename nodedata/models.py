@@ -59,7 +59,7 @@ class RawNodeData(models.Model):
         return 'v0.' + version_split[0] + '.' + minor_version
 
     def get_subversion(self):
-        return self.networkinfo_json['subversion'].strip("/")
+        return self.networkinfo_json['subversion'].strip("/").split(':')[0]
 
     def get_time_millis(self):
         return self.nettotals_json['timemillis']  # Unix epoch time in milliseconds according to the operating system’s clock (not the node adjusted time)
