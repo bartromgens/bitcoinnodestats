@@ -87,8 +87,15 @@ class Node(object):
         self.subversion = data_latest.get_subversion()
         self.block_count = data_latest.get_blocks()
         self.peers = []
-        if data_latest.peerinfo_json:
-            self.peers = data_latest.peerinfo_json
+        for peer in data_latest.peerinfo_json:
+            duration = datetime.now(tz=pytz.utc) - datetime.fromtimestamp(peer['conntime'], tz=pytz.utc)
+            duration_hours = duration.total_seconds() / 3600.0
+            self.peers.append({
+                'duration_hours': duration_hours,
+                'address': peer['addr'],
+                'received_mb': peer['bytesrecv'] /1024/1024,
+                'sent_mb': peer['bytessent'] /1024/1024,
+            })
         proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
         bestblockhash = proxy.getbestblockhash()
         best_block = proxy.call('getblock', b2lx(bestblockhash))
