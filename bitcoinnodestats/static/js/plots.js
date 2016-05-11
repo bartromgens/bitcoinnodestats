@@ -1,9 +1,9 @@
 
 var create_plot = function(json_filepath, title) {
     // Set the dimensions of the canvas / graph
-    var margin = {top: 30, right: 20, bottom: 50, left: 60},
+    var margin = {top: 60, right: 20, bottom: 50, left: 60},
         width = 800 - margin.left - margin.right,
-        height = 300 - margin.top - margin.bottom;
+        height = 350 - margin.top - margin.bottom;
 
     // Parse the date / time
     var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
@@ -53,15 +53,13 @@ var create_plot = function(json_filepath, title) {
             .attr("d", valueline(data));
 
         // Append marker
-        svg.selectAll(".dot")
+        svg.selectAll(".marker")
           .data(data)
           .enter().append("circle")
-          .attr("class", "dot")
-          .attr("r", 2)
+          .attr("class", "marker")
+          .attr("r", 3)
           .attr("cx", function(d) { return x(d.datetime); })
-          .attr("cy", function(d) { return y(d.y); })
-          .style("fill", "white")
-          .style("stroke", "blue");
+          .attr("cy", function(d) { return y(d.y); });
 
           // append the rectangle to capture mouse
         svg.append("rect")
@@ -82,8 +80,8 @@ var create_plot = function(json_filepath, title) {
             .attr("class", "y")
             .style("fill", "none")
             .style("stroke-width", 3)
-            .style("stroke", "blue")
-            .attr("r", 5);
+            .style("stroke", "white")
+            .attr("r", 6);
 
         // place the value at the intersection
         focus.append("text")
@@ -126,7 +124,7 @@ var create_plot = function(json_filepath, title) {
                       "translate(" + x(d.datetime) + "," +
                                      y(d.y) + ")");
 
-            var formatDate = d3.time.format("%d-%b %H:%M");
+            var formatDate = d3.time.format("%d %b %H:%M");
 
             var tooltip_x = x(d.datetime) + 15;
             var tooltip_y = y(d.y) + 30;
@@ -152,6 +150,7 @@ var create_plot = function(json_filepath, title) {
         // Add the X Axis
         svg.append("g")
             .attr("class", "x axis")
+            .style("fill", "steelblue")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
 
@@ -159,11 +158,13 @@ var create_plot = function(json_filepath, title) {
             .attr("x", width / 2 )
             .attr("y",  height + margin.bottom )
             .style("text-anchor", "middle")
+            .style("fill", "white")
             .text(json['xlabel']);
 
         // Add the Y Axis
         svg.append("g")
             .attr("class", "y axis")
+            .style("fill", "steelblue")
             .call(yAxis);
 
         svg.append("text")      // text label for the x axis
@@ -172,7 +173,16 @@ var create_plot = function(json_filepath, title) {
             .attr("y", - margin.left )
             .attr("dy", "1em")
             .style("text-anchor", "middle")
+            .style("fill", "white")
             .text(json['ylabel']);
+
+        svg.append("text")
+            .attr("x", width / 2 )
+            .attr("y", "-1em")
+            .style("text-anchor", "middle")
+            .style("fill", "white")
+            .style("font-size", "1.5em")
+            .text(json['title']);
     });
 };
 

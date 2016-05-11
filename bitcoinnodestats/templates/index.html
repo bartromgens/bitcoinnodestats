@@ -6,13 +6,16 @@
 {% block content %}
 
 <div class="container">
-
-  <p>connections: {{ stats.connection_count }}</p>
-  <p>recevied: {{ stats.sent_mb|floatformat:1  }} MiB</p>
-  <p>sent: {{ stats.received_mb|floatformat:1 }} MiB</p>
-  <p>node version: {{ node.version }}</p>
-  <p>{{ stats.n_data_points }} data points</p>
-  <p>latest data point: {{ stats.latest_data_point }} </p>
-
+  <div class="row">
+    <div class="col-sm-4 col-sm-offset-1">
+      <h5>block {{ node.block_count }}</h5>
+      <h5>{{ stats.connection_count }} connections</h5>
+      <h5>node version: {{ node.version }}</h5>
+      <h5>{{ stats.sent_mb|floatformat:0  }} MiB received</h5>
+      <h5>{{ stats.received_mb|floatformat:0 }} MiB sent</h5>
+      <h5>{{ stats.n_data_points }} data points</h5>
+      <font>last update: {{ stats.latest_data_point }}</font>
+    </div>
+  </div>
 </div>
 {% endblock %}
