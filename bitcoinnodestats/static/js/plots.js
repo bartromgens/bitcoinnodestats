@@ -1,9 +1,11 @@
 
 var create_plot = function(json_filepath, title) {
     // Set the dimensions of the canvas / graph
-    var margin = {top: 60, right: 20, bottom: 50, left: 60},
-        width = 800 - margin.left - margin.right,
-        height = 350 - margin.top - margin.bottom;
+    plot_width = parseInt(d3.select("body").select("#plot").style('width'), 10);
+    console.log(plot_width)
+    var margin = {top: 60, right: 10, bottom: 50, left: 60};
+    var width = plot_width - margin.left - margin.right;
+    var height = Math.min(plot_width/2.0 - margin.top - margin.bottom, 300);
 
     // Parse the date / time
     var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
@@ -29,7 +31,7 @@ var create_plot = function(json_filepath, title) {
     var svg = d3.select("body").select("#plot")
         .append("svg")
             .attr("id", title)
-            .attr("width", width + margin.left + margin.right)
+            .attr("width", plot_width)
             .attr("height", height + margin.top + margin.bottom)
         .append("g")
             .attr("transform",
@@ -146,6 +148,19 @@ var create_plot = function(json_filepath, title) {
                 .attr("transform", translate_str)
                 .text(formatDate(d.datetime));
         }
+
+//        d3.select(window).on('resize', resize);
+//
+//        function resize() {
+//            // update width
+////            var svg = svg;
+////            var x = x;
+//            plot_width = parseInt(d3.select("body").select("#plot").style('width'), 10);
+//            width = plot_width - margin.left - margin.right;
+//            x.range([0, width]);
+//            d3.select("body").select("#plot").select("svg")
+//            .attr("width", width)
+//        }
 
         // Add the X Axis
         svg.append("g")
