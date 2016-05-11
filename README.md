@@ -24,7 +24,7 @@ Create a cronjob to update the data every n minutes,
 ```$ crontab -e```  
 and add the following line at the end and replace the placeholders with your project location,  
 ```*/5 * * * * source /home/<user>/<projectdir>/env/bin/activate && python /home/<user>/<projectdir>/manage.py runcrons > /home/<user>/<projectdir>/cronjob.log 2>&1```  
-Warning: you may need to define `SHELL=/bin/bash` at the top of je crontab for the command to work. 
+Warning: you may need to define `SHELL=/bin/bash` at the top of your crontab for the command to work. 
 
 Please create a ticket if you have any problems with the installation.
 
