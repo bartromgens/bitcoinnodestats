@@ -2,8 +2,10 @@ import os
 import json
 from datetime import datetime
 import re
+import pytz
 
 from django.db import models
+from django.utils import timezone
 
 from jsonfield import JSONField
 
@@ -137,24 +139,26 @@ class NodeStats(object):
                 continue
             self.total_sent_bytes += sent_diff_bytes
             self.total_received_bytes += received_diff_bytes
+            datetime_utc = datetime.fromtimestamp(current_point.get_time_millis()/1000, tz=pytz.utc)
+            datetime_local = timezone.localtime(datetime_utc).strftime('%Y-%m-%d %H:%M:%S')
             json_points_sent.append({
-                'datetime': datetime.fromtimestamp(current_point.get_time_millis()/1000).strftime('%Y-%m-%d %H:%M:%S'),
+                'datetime': datetime_local,
                 'y': self.total_sent_bytes/1024/1024,
             })
             json_points_received.append({
-                'datetime': datetime.fromtimestamp(current_point.get_time_millis() / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                'datetime': datetime_local,
                 'y': self.total_received_bytes / 1024 / 1024,
             })
             json_points_upload.append({
-                'datetime': datetime.fromtimestamp(current_point.get_time_millis() / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                'datetime': datetime_local,
                 'y': sent_diff_bytes / 1024 / time_diff_sec,
             })
             json_points_download.append({
-                'datetime': datetime.fromtimestamp(current_point.get_time_millis() / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                'datetime': datetime_local,
                 'y': received_diff_bytes / 1024 / time_diff_sec,
             })
             json_connection_count.append({
-                'datetime': datetime.fromtimestamp(current_point.get_time_millis() / 1000).strftime('%Y-%m-%d %H:%M:%S'),
+                'datetime': datetime_local,
                 'y': current_point.get_connection_count(),
             })
 
