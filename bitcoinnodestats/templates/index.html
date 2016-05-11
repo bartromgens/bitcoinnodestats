@@ -16,6 +16,13 @@
       <h5>{{ stats.n_data_points }} data points</h5>
       <font>last update: {{ stats.latest_data_point }}</font>
     </div>
+    <div class="row">
+      <div class="col-sm-12">
+      {% for peer in node.peers %}
+      {{ peer.conntime }}
+      {% endfor %}
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

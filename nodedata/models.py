@@ -12,18 +12,18 @@ import bitcoin.rpc
 
 def create_node_data():
     proxy = bitcoin.rpc.Proxy()
-    info = proxy.getinfo()  # https://bitcoin.org/en/developer-reference#getinfo
-    nettotals = proxy.call('getnettotals')  # https://bitcoin.org/en/developer-reference#getnettotals
-
     nodedata = RawNodeData()
-    nodedata.info_json = info
-    nodedata.nettotals_json = nettotals
+    nodedata.info_json = proxy.getinfo()
+    nodedata.nettotals_json = proxy.call('getnettotals')
+    nodedata.peerinfo_json = proxy.call('getpeerinfo')
     nodedata.save()
+    return nodedata
 
 
 class RawNodeData(models.Model):
     info_json = JSONField()
     nettotals_json = JSONField()
+    peerinfo_json = JSONField()
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
 
     def __str__(self):
@@ -61,6 +61,9 @@ class Node(object):
         data_latest = RawNodeData.get_latest_node_data()
         self.version = data_latest.get_version()
         self.block_count = data_latest.get_blocks()
+        self.peers = []
+        if data_latest.peerinfo_json:
+            self.peers = data_latest.peerinfo_json
 
 
 class NodeStats(object):
