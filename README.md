@@ -16,7 +16,7 @@ $ git clone https://github.com/bartromgens/bitcoinnodestats.git
 $ cd bitcoinnodestats
 ```
 
-Install in a local environement (creates a Python 3 virtualenv and a sqlite database),  
+Install in a local environment (creates a Python 3 virtualenv and a sqlite database),  
 ```$ ./install.sh```
 
 ##### Schedule status snapshots (cronjob)
