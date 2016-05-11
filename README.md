@@ -36,9 +36,11 @@ Visit http://127.0.0.1:8000 in your browser to view your node stats.
 Note that it will takes some time before enough data is stored for the charts. 
 
 ### Configuration
-`bitcoinnodestats/local_settings.py` contains some local settings that you may want or need to change.
+`bitcoinnodestats/local_settings.py` contains some local settings that you may want or need to change if you run it on a production server.
 
 `BITCOIN_CONF_FILE` is the location of your 'bitcoin.conf', only needed if it is not in the default location. 
+
+`DEBUG` should be set to False on a production server.  
 
 ### TODO
 - Change UTC to local time
