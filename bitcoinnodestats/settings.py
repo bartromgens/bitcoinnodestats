@@ -140,6 +140,6 @@ BOOTSTRAP3 = {
 #
 
 CRON_CLASSES = [
-    # 'nodedata.cronjobs.UpdateNodeData',
-    'nodedata.cronjobs.TestUpdateNode',
+    'nodedata.cronjobs.UpdateNodeData',
+    # 'nodedata.cronjobs.TestUpdateNode',
 ]
