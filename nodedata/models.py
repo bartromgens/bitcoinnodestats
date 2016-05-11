@@ -95,6 +95,7 @@ class NodeStats(object):
         json_points_upload = []
         json_points_download = []
         json_connection_count = []
+
         index = 0
         while index < datapoints.count()-1:
             next_point = datapoints[index+1]
@@ -109,7 +110,7 @@ class NodeStats(object):
             sent_diff_bytes = next_point.get_sent_bytes() - current_point.get_sent_bytes()
             received_diff_bytes = next_point.get_received_bytes() - current_point.get_received_bytes()
             if sent_diff_bytes < 0 or received_diff_bytes < 0:
-                print('server was down')
+                # server restarted, cannot use differences between current and next point
                 continue
             self.total_sent_bytes += sent_diff_bytes
             self.total_received_bytes += received_diff_bytes
