@@ -16,12 +16,15 @@ from bitcoinnodestats import local_settings
 
 
 def create_node_data():
-    proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
     nodedata = RawNodeData()
-    nodedata.info_json = proxy.getinfo()
-    nodedata.nettotals_json = proxy.call('getnettotals')
-    nodedata.peerinfo_json = proxy.call('getpeerinfo')
-    nodedata.networkinfo_json = proxy.call('getnetworkinfo')
+    try:
+        proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
+        nodedata.info_json = proxy.getinfo()
+        nodedata.nettotals_json = proxy.call('getnettotals')
+        nodedata.peerinfo_json = proxy.call('getpeerinfo')
+        nodedata.networkinfo_json = proxy.call('getnetworkinfo')
+    except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
+        print(error)
     nodedata.save()
     return nodedata
 
