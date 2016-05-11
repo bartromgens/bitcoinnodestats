@@ -16,7 +16,7 @@ class UpdateNodeData(CronJobBase):
 
 
 class TestUpdateNode(CronJobBase):
-    RUN_EVERY_MINS = 0
+    RUN_EVERY_MINS = 10
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'nodedata.test_create_node_data'
 
