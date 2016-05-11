@@ -52,7 +52,7 @@
   <div class="row" align="center">
     <div class="col-md-12">
       <h5>Peers</h5>
-      <table class="table">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>Address</th>
@@ -63,7 +63,7 @@
         </thead>
         <tbody>
           {% for peer in node.peers %}
-          <tr class="success">
+          <tr>
             <td>{{ peer.address }}</td>
             <td>{{ peer.duration_hours|floatformat:1 }}</td>
             <td>{{ peer.received_mb|floatformat:1 }}</td>
