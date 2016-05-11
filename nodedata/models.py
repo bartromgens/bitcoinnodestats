@@ -96,10 +96,14 @@ class Node(object):
                 'received_mb': peer['bytesrecv'] /1024/1024,
                 'sent_mb': peer['bytessent'] /1024/1024,
             })
-        proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
-        bestblockhash = proxy.getbestblockhash()
-        best_block = proxy.call('getblock', b2lx(bestblockhash))
-        self.best_block = best_block
+        try:
+            proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
+            bestblockhash = proxy.getbestblockhash()
+            self.best_block = proxy.call('getblock', b2lx(bestblockhash))
+            self.status = 'Up and running'
+        except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
+            self.status = 'Error: Connection Refused'
+            print(error)
 
 
 class NodeStats(object):
@@ -208,8 +212,8 @@ class NodeStats(object):
         json_data = {
             'points': json_connection_count,
             'xlabel': 'Time',
-            'ylabel': 'Connections [-]',
-            'title': 'Connection Count',
+            'ylabel': 'Peers [#]',
+            'title': 'Peers',
             'unit': ''
         }
         NodeStats.write_json(json_data, 'connections.json')
