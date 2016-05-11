@@ -1,6 +1,8 @@
 import os
 import json
 from datetime import datetime
+import re
+
 from django.db import models
 
 from jsonfield import JSONField
@@ -17,6 +19,7 @@ def create_node_data():
     nodedata.info_json = proxy.getinfo()
     nodedata.nettotals_json = proxy.call('getnettotals')
     nodedata.peerinfo_json = proxy.call('getpeerinfo')
+    nodedata.networkinfo_json = proxy.call('getnetworkinfo')
     nodedata.save()
     return nodedata
 
@@ -25,6 +28,7 @@ class RawNodeData(models.Model):
     info_json = JSONField()
     nettotals_json = JSONField()
     peerinfo_json = JSONField()
+    networkinfo_json = JSONField()
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
 
     def __str__(self):
@@ -43,7 +47,14 @@ class RawNodeData(models.Model):
         return self.info_json['errors']
 
     def get_version(self):
-        return self.info_json['version']
+        return self.networkinfo_json['version']
+
+    def get_version_str(self):
+        version_split = re.findall('..', str(self.get_version()))
+        return 'v0.' + version_split[0] + '.' + version_split[1].strip("0")
+
+    def get_subversion(self):
+        return self.networkinfo_json['subversion']
 
     def get_time_millis(self):
         return self.nettotals_json['timemillis']  # Unix epoch time in milliseconds according to the operating system’s clock (not the node adjusted time)
@@ -51,16 +62,24 @@ class RawNodeData(models.Model):
     def get_blocks(self):
         return self.info_json['blocks']
 
+    def get_localaddresses(self):
+        return self.networkinfo_json['localaddresses']
+
     @staticmethod
     def get_latest_node_data():
         return RawNodeData.objects.all().latest('datetime_created')
+
+    @staticmethod
+    def get_first_node_data():
+        return RawNodeData.objects.all().earliest('datetime_created')
 
 
 class Node(object):
     def __init__(self):
         super().__init__()
         data_latest = RawNodeData.get_latest_node_data()
-        self.version = data_latest.get_version()
+        self.version = data_latest.get_version_str()
+        self.subversion = data_latest.get_subversion()
         self.block_count = data_latest.get_blocks()
         self.peers = []
         if data_latest.peerinfo_json:
@@ -78,6 +97,7 @@ class NodeStats(object):
         super().__init__()
         data_latest = RawNodeData.get_latest_node_data()
         self.latest_data_point = data_latest.datetime_created
+        self.first_data_point = RawNodeData.get_first_node_data().datetime_created
         self.connection_count = data_latest.get_connection_count()
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
