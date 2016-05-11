@@ -45,10 +45,11 @@
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
+          <li><a href="https://github.com/bartromgens/bitcoinnodestats">Code</a></li>
         {% if request.user.is_authenticated %}
           <!--<li><a>{{ request.user.username }}</a></li>-->
           {% if request.user.is_staff %}
-          <li><a href="/admin" target="_blank">admin</a></li>
+          <li><a href="/admin" target="_blank">Admin</a></li>
           {% endif %}
         {% endif %}
 
