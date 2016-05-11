@@ -29,21 +29,16 @@
   <hr/>
 
   <div class="row" align="center">
-    <div class="col-sm-4">
-      <font>{{ stats.n_data_points }} status snapshots </font>
-    </div>
-    <div class="col-sm-4">
-      <font>since {{ stats.first_data_point|date:"DATE_FORMAT" }}</font>
-    </div>
-    <div class="col-sm-4">
+    <div class="col-md-12">
+      <font>{{ stats.n_data_points }} status records, </font>
+      <font>since {{ stats.first_data_point|date:"DATE_FORMAT" }}, </font>
       <font>last update on {{ stats.latest_data_point|date:"DATETIME_FORMAT" }}</font>
     </div>
-  </div>
+  <div>
 
 <hr/>
 
 <script src="//d3js.org/d3.v3.min.js" type="text/javascript"></script>
-
 
   <div class="row">
     <div class="col-md-12">
