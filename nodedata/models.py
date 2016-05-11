@@ -105,8 +105,8 @@ class NodeStats(object):
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
         self.generate_stats()
-        self.sent_mb = self.total_sent_bytes/1024/1024
-        self.received_mb = self.total_received_bytes/1024/1024
+        self.sent_gb = self.total_sent_bytes/1024/1024/1024
+        self.received_gb = self.total_received_bytes/1024/1024/1024
         self.n_data_points = RawNodeData.objects.count()
 
     def generate_stats(self):

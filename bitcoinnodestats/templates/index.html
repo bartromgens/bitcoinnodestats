@@ -19,10 +19,10 @@
       <h5>{{ stats.connection_count }} connections</h5>
     </div>
     <div class="col-sm-3">
-      <h5>{{ stats.sent_mb|floatformat:0 }} MiB sent</h5>
+      <h5>{{ stats.sent_gb|floatformat:2 }} GiB sent</h5>
     </div>
     <div class="col-sm-3">
-      <h5>{{ stats.received_mb|floatformat:0 }} MiB received</h5>
+      <h5>{{ stats.received_gb|floatformat:2 }} GiB received</h5>
     </div>
   </div>
 
@@ -30,7 +30,7 @@
 
   <div class="row" align="center">
     <div class="col-sm-4">
-      <font>{{ stats.n_data_points }} data snapshots </font>
+      <font>{{ stats.n_data_points }} status snapshots </font>
     </div>
     <div class="col-sm-4">
       <font>since {{ stats.first_data_point|date:"DATE_FORMAT" }}</font>
