@@ -3,7 +3,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = False
+DEBUG = True
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
