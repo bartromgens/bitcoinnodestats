@@ -3,7 +3,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-DEBUG = True
+DEBUG = False
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = ''
@@ -31,16 +31,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'bitcoinnodestats/static/media/')
 #MEDIA_URL = 'http://www.<your-domain>.com/static/media/'
 MEDIA_URL = '/static/media/'
 
-
-# email server settings for outgoing mails
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.domain.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = ''
-EMAIL_HOST_PASSWORD = ''
-
-DEFAULT_FROM_EMAIL = 'info@domain.com'
-SERVER_EMAIL = 'info@domain.com'
-
-
+# the absolute path of the bitcoin config file
+# python-bitcoinlib will try to find it in the default location
+# you only need to set this if you have a special location for your bitcoin config
 BITCOIN_CONF_FILE = None
