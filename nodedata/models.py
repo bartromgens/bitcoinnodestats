@@ -51,7 +51,10 @@ class RawNodeData(models.Model):
 
     def get_version_str(self):
         version_split = re.findall('..', str(self.get_version()))
-        return 'v0.' + version_split[0] + '.' + version_split[1].strip("0")
+        minor_version = version_split[1].strip("0")
+        if minor_version == '':
+            minor_version = '0'
+        return 'v0.' + version_split[0] + '.' + minor_version
 
     def get_subversion(self):
         return self.networkinfo_json['subversion']
