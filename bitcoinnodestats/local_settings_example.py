@@ -41,3 +41,6 @@ EMAIL_HOST_PASSWORD = ''
 
 DEFAULT_FROM_EMAIL = 'info@domain.com'
 SERVER_EMAIL = 'info@domain.com'
+
+
+BITCOIN_CONF_FILE = None

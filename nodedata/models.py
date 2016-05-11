@@ -12,7 +12,7 @@ from bitcoinnodestats import local_settings
 
 
 def create_node_data():
-    proxy = bitcoin.rpc.Proxy()
+    proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
     nodedata = RawNodeData()
     nodedata.info_json = proxy.getinfo()
     nodedata.nettotals_json = proxy.call('getnettotals')
@@ -65,11 +65,9 @@ class Node(object):
         self.peers = []
         if data_latest.peerinfo_json:
             self.peers = data_latest.peerinfo_json
-        proxy = bitcoin.rpc.Proxy()
+        proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
         bestblockhash = proxy.getbestblockhash()
-        best_block = proxy.getblock(bestblockhash)
         best_block = proxy.call('getblock', b2lx(bestblockhash))
-        print(best_block)
         self.best_block = best_block
 
 
