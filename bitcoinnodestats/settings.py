@@ -139,7 +139,6 @@ BOOTSTRAP3 = {
 
 CRON_CLASSES = [
     'nodedata.cronjobs.UpdateNodeData',
-    # 'nodedata.cronjobs.TestUpdateNode',
 ]
 
 # import secret local settings
