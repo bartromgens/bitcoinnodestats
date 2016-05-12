@@ -187,11 +187,11 @@ class NodeStats(object):
             datetime_local = timezone.localtime(datetime_utc).strftime('%Y-%m-%d %H:%M:%S')
             json_points_sent.append({
                 'datetime': datetime_local,
-                'y': self.total_sent_bytes/1024/1024,
+                'y': self.total_sent_bytes / 1024/1024/1024,
             })
             json_points_received.append({
                 'datetime': datetime_local,
-                'y': self.total_received_bytes / 1024 / 1024,
+                'y': self.total_received_bytes / 1024/1024/1024,
             })
             json_points_upload.append({
                 'datetime': datetime_local,
@@ -209,18 +209,18 @@ class NodeStats(object):
         json_data = {
             'points': json_points_sent,
             'xlabel': 'Time',
-            'ylabel': 'Data [MB]',
+            'ylabel': 'Data [GiB]',
             'title': 'Total Outgoing Data',
-            'unit': 'MB'
+            'unit': 'GiB'
         }
         NodeStats.write_json(json_data, 'data_sent.json')
 
         json_data = {
             'points': json_points_received,
             'xlabel': 'Time',
-            'ylabel': 'Data [MB]',
+            'ylabel': 'Data [GiB]',
             'title': 'Total Incoming Data',
-            'unit': 'MB'
+            'unit': 'GiB'
         }
         NodeStats.write_json(json_data, 'data_received.json')
 
