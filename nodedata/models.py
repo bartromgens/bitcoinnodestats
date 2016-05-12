@@ -148,6 +148,7 @@ class NodeStats(object):
         self.generate_stats()
         self.sent_gb = self.total_sent_bytes/1024/1024/1024
         self.received_gb = self.total_received_bytes/1024/1024/1024
+        self.share_ratio = self.sent_gb / self.received_gb
         self.n_data_points = RawNodeData.objects.count()
 
     def generate_stats(self):

@@ -21,14 +21,16 @@
     <div class="col-sm-2">
       <h5>{{ stats.connection_count }} peers</h5>
     </div>
-    <div class="col-sm-2 col-sm-offset-1">
+    <div class="col-sm-2">
       <h5>{{ stats.sent_gb|floatformat:2 }} GiB <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></h5>
     </div>
     <div class="col-sm-2">
       <h5>{{ stats.received_gb|floatformat:2 }} GiB <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></h5>
     </div>
+    <div class="col-sm-1">
+      <h5>{{ stats.share_ratio|floatformat:2 }}</h5>
+    </div>
   </div>
-
 
   <hr/>
 
