@@ -1,15 +1,18 @@
 # bitcoinnodestats
 
-A basic bitcoin node status and statistics web application.
+A basic Bitcoin node status and statistics web application.
 
-Shows charts with connection count, outgoing/incoming data, and upload/download speeds versus time.  
-Stores node status snapshots in a sqlite database to preserve data after node restart.
-
-Based on [Django](https://www.djangoproject.com/), [python-bitcoinlib](https://github.com/petertodd/python-bitcoinlib), and [D3js](https://github.com/mbostock/d3).
+Based on [Django](https://www.djangoproject.com/), [python-bitcoinlib](https://github.com/petertodd/python-bitcoinlib),  [D3js](https://github.com/mbostock/d3), and [bootstrap](https://github.com/twbs/bootstrap).  
+Requires Python 3.3+.
 
 ### Demo
 
 **[bitcoinnodestats.romgens.com](http://bitcoinnodestats.romgens.com)**
+
+### Features
+- Store node status at given time intervals to sqlite database (Django and cron)
+- Visualise data in charts and tables (D3js and bootstrap)
+- Current node status overview
 
 ### Installation (Linux)
 
