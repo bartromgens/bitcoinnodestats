@@ -301,7 +301,7 @@ class NodeStats(object):
             'xlabel': 'Time',
             'ylabel': 'Peers [#]',
             'title': 'Peers',
-            'unit': ''
+            'unit': 'connections'
         }
         NodeStats.write_json(json_data, 'connections.json')
 

@@ -2,9 +2,10 @@
 var create_plot = function(json_filepath, title) {
     // Set the dimensions of the canvas / graph
     plot_width = parseInt(d3.select("body").select("#plot").style('width'), 10);
-    var margin = {top: 60, right: 10, bottom: 50, left: 60};
+    var margin = {top: 60, right: 30, bottom: 50, left: 60};
     var width = plot_width - margin.left - margin.right;
     var height = Math.min(plot_width/2.0 - margin.top - margin.bottom, 300);
+    var plot_height = height + margin.top + margin.bottom;
 
     // Parse the date / time
     var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
@@ -31,7 +32,7 @@ var create_plot = function(json_filepath, title) {
         .append("svg")
             .attr("id", title)
             .attr("width", plot_width)
-            .attr("height", height + margin.top + margin.bottom)
+            .attr("height", plot_height)
         .append("g")
             .attr("transform",
                   "translate(" + margin.left + "," + margin.top + ")");
@@ -66,10 +67,10 @@ var create_plot = function(json_filepath, title) {
         var focus = svg.append("g")
             .style("display", "none");
 
-          // append the rectangle to capture mouse
+        // append the rectangle to capture mouse
         svg.append("rect")
-            .attr("width", width)
-            .attr("height", height)
+            .attr("width", plot_width)
+            .attr("height", plot_height)
             .style("fill", "none")
             .style("pointer-events", "all")
             .on("mouseover", function() { focus.style("display", null); })
@@ -115,11 +116,15 @@ var create_plot = function(json_filepath, title) {
             .attr("dy", "1em");
 
         function mousemove() {
-            var x0 = x.invert(d3.mouse(this)[0]),
-                i = bisectDate(data, x0, 1),
-                d0 = data[i - 1],
-                d1 = data[i],
-                d = x0 - d0.datetime > d1.datetime - x0 ? d1 : d0;
+            var x0 = x.invert(d3.mouse(this)[0]);
+            var i = bisectDate(data, x0, 1);
+            if (i > 0 && i < data.length) {
+                var d0 = data[i - 1];
+                var d1 = data[i];
+                var d = x0 - d0.datetime > d1.datetime - x0 ? d1 : d0;
+            } else { // mouse is outside the plot area, i is not valid
+                var d = data[data.length-1];
+            }
 
             focus.select("circle.y")
                 .attr("transform",
