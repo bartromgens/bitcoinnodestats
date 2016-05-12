@@ -51,37 +51,62 @@ class RawNodeData(models.Model):
         return 'RawNodeData: ' + str(self.datetime_created) + ', connections: ' + str(self.get_connection_count())
 
     def get_sent_bytes(self):
+        if not self.nettotals_json:
+            print('Warning: nettotals_json is empty')
+            return 0
         return self.nettotals_json['totalbytessent']
 
     def get_received_bytes(self):
+        if not self.nettotals_json:
+            print('Warning: nettotals_json is empty')
+            return 0
         return self.nettotals_json['totalbytesrecv']
 
     def get_connection_count(self):
+        if not self.info_json:
+            return 0
         return self.info_json['connections']
 
     def get_errors(self):
+        if not self.info_json:
+            return 'Connection Error'
         return self.info_json['errors']
 
     def get_version(self):
+        if not self.networkinfo_json:
+            print('Warning: networkinfo_json is empty')
+            return '000000'
         return self.networkinfo_json['version']
 
     def get_version_str(self):
-        version_split = re.findall('..', str(self.get_version()))
+        version_split = re.findall('..', self.get_version())
         minor_version = version_split[1].strip("0")
         if minor_version == '':
             minor_version = '0'
         return 'v0.' + version_split[0] + '.' + minor_version
 
     def get_subversion(self):
+        if not self.networkinfo_json:
+            print('Warning: networkinfo_json is empty')
+            return []
         return self.networkinfo_json['subversion'].strip("/")
 
     def get_time_millis(self):
+        if not self.nettotals_json:
+            print('Warning: nettotals_json is empty')
+            return 0
         return self.nettotals_json['timemillis']  # Unix epoch time in milliseconds according to the operating system’s clock (not the node adjusted time)
 
-    def get_blocks(self):
+    def get_block_count(self):
+        if not self.info_json:
+            print('Warning: info_json is empty')
+            return 0
         return self.info_json['blocks']
 
     def get_localaddresses(self):
+        if not self.nettotals_json:
+            print('Warning: nettotals_json is empty')
+            return 'unknown'
         return self.networkinfo_json['localaddresses']
 
     @staticmethod
@@ -108,7 +133,7 @@ class Node(object):
         data_latest = RawNodeData.get_latest_node_data()
         self.version = data_latest.get_version_str()
         self.subversion = data_latest.get_subversion()
-        self.block_count = data_latest.get_blocks()
+        self.block_count = data_latest.get_block_count()
         self.peers = []
         for peer in data_latest.peerinfo_json:
             duration = datetime.now(tz=pytz.utc) - datetime.fromtimestamp(peer['conntime'], tz=pytz.utc)
