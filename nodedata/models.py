@@ -4,8 +4,6 @@ from datetime import datetime
 import re
 import pytz
 
-import requests
-
 from django.db import models
 from django.utils import timezone
 
@@ -28,6 +26,17 @@ def create_node_data():
     except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
         print(error)
     nodedata.save()
+    for peer_json in nodedata.peerinfo_json:
+        port = peer_json['addr'].split(':')[-1]
+        ip = peer_json['addr'].replace(':' + port, '')
+        peers = Peer.objects.filter(ip=ip, port=port)
+        if peers.exists():
+            peer = peers[0]
+        else:
+            peer = Peer()
+        peer.port = port
+        peer.ip = ip
+        peer.save()
     return nodedata
 
 
@@ -84,6 +93,15 @@ class RawNodeData(models.Model):
         return RawNodeData.objects.all().earliest('datetime_created')
 
 
+class Peer(models.Model):
+    ip = models.CharField(max_length=300, blank=False)
+    port = models.IntegerField(blank=False)
+    datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
+
+    def __str__(self):
+        return str(self.ip) + ':' + str(self.port)
+
+
 class Node(object):
     def __init__(self):
         super().__init__()
@@ -96,9 +114,6 @@ class Node(object):
             duration = datetime.now(tz=pytz.utc) - datetime.fromtimestamp(peer['conntime'], tz=pytz.utc)
             duration_hours = duration.total_seconds() / 3600.0
             bitnodes_url = 'https://bitnodes.21.co/nodes/' + peer['addr'].replace(':', '-')
-            r = requests.get(bitnodes_url)
-            if r.status_code == 404:
-                bitnodes_url = None
             self.peers.append({
                 'duration_hours': duration_hours,
                 'address': peer['addr'],
