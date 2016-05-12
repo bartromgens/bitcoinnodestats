@@ -55,12 +55,16 @@ var create_plot = function(json_filepath, title) {
 
         // Append marker
         svg.selectAll(".marker")
-          .data(data)
-          .enter().append("circle")
-          .attr("class", "marker")
-          .attr("r", 3)
-          .attr("cx", function(d) { return x(d.datetime); })
-          .attr("cy", function(d) { return y(d.y); });
+            .data(data)
+            .enter().append("circle")
+            .attr("class", "marker")
+            .attr("r", 3)
+            .attr("cx", function(d) { return x(d.datetime); })
+            .attr("cy", function(d) { return y(d.y); });
+
+        // focus is based on http://www.d3noob.org/2014/07/my-favourite-tooltip-method-for-line.html
+        var focus = svg.append("g")
+            .style("display", "none");
 
           // append the rectangle to capture mouse
         svg.append("rect")
@@ -72,17 +76,13 @@ var create_plot = function(json_filepath, title) {
             .on("mouseout", function() { focus.style("display", "none"); })
             .on("mousemove", mousemove);
 
-        // focus is based on http://www.d3noob.org/2014/07/my-favourite-tooltip-method-for-line.html
-        var focus = svg.append("g")
-            .style("display", "none");
-
         // append the circle at the intersection
         focus.append("circle")
             .attr("class", "y")
-            .style("fill", "none")
+            .style("fill", "steelblue")
             .style("stroke-width", 3)
             .style("stroke", "white")
-            .attr("r", 6);
+            .attr("r", 5);
 
         // place the value at the intersection
         focus.append("text")
@@ -115,11 +115,10 @@ var create_plot = function(json_filepath, title) {
             .attr("dy", "1em");
 
         function mousemove() {
-            var data2 = data;
             var x0 = x.invert(d3.mouse(this)[0]),
-                i = bisectDate(data2, x0, 1),
-                d0 = data2[i - 1],
-                d1 = data2[i],
+                i = bisectDate(data, x0, 1),
+                d0 = data[i - 1],
+                d1 = data[i],
                 d = x0 - d0.datetime > d1.datetime - x0 ? d1 : d0;
 
             focus.select("circle.y")
