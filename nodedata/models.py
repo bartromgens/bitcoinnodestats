@@ -4,6 +4,8 @@ from datetime import datetime
 import re
 import pytz
 
+import requests
+
 from django.db import models
 from django.utils import timezone
 
@@ -93,9 +95,14 @@ class Node(object):
         for peer in data_latest.peerinfo_json:
             duration = datetime.now(tz=pytz.utc) - datetime.fromtimestamp(peer['conntime'], tz=pytz.utc)
             duration_hours = duration.total_seconds() / 3600.0
+            bitnodes_url = 'https://bitnodes.21.co/nodes/' + peer['addr'].replace(':', '-')
+            r = requests.get(bitnodes_url)
+            if r.status_code == 404:
+                bitnodes_url = None
             self.peers.append({
                 'duration_hours': duration_hours,
                 'address': peer['addr'],
+                'bitnodes_url': bitnodes_url,
                 'received_mb': peer['bytesrecv'] /1024/1024,
                 'sent_mb': peer['bytessent'] /1024/1024,
             })

@@ -50,6 +50,7 @@
         <thead>
           <tr>
             <th>Address</th>
+            <th>bitnodes.21.co</th>
             <th>Connection time [hours]</th>
             <th>Received [MiB]</th>
             <th>Sent [MiB]</th>
@@ -59,6 +60,7 @@
           {% for peer in node.peers %}
           <tr>
             <td>{{ peer.address }}</td>
+            <td>{% if peer.bitnodes_url %}<a href="{{ peer.bitnodes_url }}">link</a>{% endif %}</td>
             <td>{{ peer.duration_hours|floatformat:1 }}</td>
             <td>{{ peer.received_mb|floatformat:1 }}</td>
             <td>{{ peer.sent_mb|floatformat:1 }}</td>
