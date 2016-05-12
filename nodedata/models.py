@@ -22,7 +22,6 @@ def create_data_record():
 
 def create_node_data(save=True):
     nodedata = RawNodeData()
-    nodedata.datetime_created = timezone.now()
     try:
         proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
         nodedata.info_json = proxy.getinfo()
@@ -34,6 +33,8 @@ def create_node_data(save=True):
         nodedata.node_up = False
     if save:
         nodedata.save()
+    else:
+        nodedata.datetime_created = timezone.now()
     return nodedata
 
 
@@ -174,7 +175,7 @@ class Node(object):
         try:
             proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
             bestblockhash = proxy.getbestblockhash()
-            best_block = proxy.call('getblock', b2lx(bestblockhash))
+            proxy.call('getblock', b2lx(bestblockhash))
             return 'Up and running'
         except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
             print(error)
