@@ -36,43 +36,23 @@
 
   <script src="//d3js.org/d3.v3.min.js" type="text/javascript"></script>
 
-    <div class="row">
-      <div class="col-md-12">
-        <div id="plot">
-        </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div id="plot">
       </div>
     </div>
+  </div>
+
+  <script src="{% static 'js/plots.js' %}" type="text/javascript"></script>
 
   <hr/>
 
   <div class="row" align="center">
     <div class="col-md-12">
       <h5>Peers</h5>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>Address</th>
-            <th>bitnodes.21.co</th>
-            <th>Connection time [hours]</th>
-            <th>Received [MiB]</th>
-            <th>Sent [MiB]</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for peer in node.peers %}
-          <tr {% if peer.bitnodes_url %} class="success"{% endif %}>
-            <td>{{ peer.address }}</td>
-            <td>{% if peer.bitnodes_url %}<a href="{{ peer.bitnodes_url }}">link</a>{% endif %}</td>
-            <td>{{ peer.duration_hours|floatformat:1 }}</td>
-            <td>{{ peer.received_mb|floatformat:1 }}</td>
-            <td>{{ peer.sent_mb|floatformat:1 }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      {% include "peer_table.html" %}
     </div>
   </div>
-
 
   <hr/>
 
@@ -86,7 +66,6 @@
 
 </div>
 
-<script src="{% static 'js/plots.js' %}" type="text/javascript"></script>
 
 
 {% endblock %}
