@@ -153,6 +153,7 @@ class NodeStats(object):
 
     def generate_stats(self):
         datapoints = RawNodeData.objects.all().order_by('datetime_created')
+        datapoints = list(datapoints)
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
         json_points_sent = []
@@ -162,12 +163,12 @@ class NodeStats(object):
         json_connection_count = []
 
         index = 0
-        while index < datapoints.count()-1:
+        while index < len(datapoints)-1:
             next_point = datapoints[index+1]
             current_point = datapoints[index]
 
             time_diff_sec = (next_point.get_time_millis() - current_point.get_time_millis()) / 1000
-            while time_diff_sec < self.time_bin_size_sec and index < datapoints.count()-2:
+            while time_diff_sec < self.time_bin_size_sec and index < len(datapoints)-2:
                 index += 1
                 next_point = datapoints[index + 1]
                 time_diff_sec = (next_point.get_time_millis() - current_point.get_time_millis()) / 1000
