@@ -20,10 +20,10 @@ Install in a local environment (creates a Python 3 virtualenv and a sqlite datab
 ```$ ./install.sh```
 
 ##### Schedule status snapshots (cronjob)
-Create a cronjob to update the data every n minutes,  
+Create a cronjob to record node status every n minutes,  
 ```$ crontab -e```  
-and add the following line at the end and replace the placeholders with your project location,  
-```*/5 * * * * source /home/<user>/<projectdir>/env/bin/activate && python /home/<user>/<projectdir>/manage.py runcrons > /home/<user>/<projectdir>/cronjob.log 2>&1```  
+To create a status record every 10 minutes, add the following line and replace the placeholders with your project location,  
+```*/10 * * * * source /home/<user>/<projectdir>/env/bin/activate && python /home/<user>/<projectdir>/manage.py runcrons > /home/<user>/<projectdir>/cronjob.log 2>&1```  
 Warning: you may need to define `SHELL=/bin/bash` at the top of your crontab for the command to work. 
 
 Please create a ticket if you have any problems with the installation.
@@ -43,8 +43,7 @@ Note that it will takes some time before enough data is stored for the charts.
 `DEBUG` should be set to False on a production server.  
 
 ### TODO
-- Change UTC to local time
-- Improve tooltip readability
-- Make update interval configurable 
-- Make plot detail configurable
+- Users can change the plot date range
+- Users can change plot detail
+- Responsive plots (rescale on window resize)
 - ...
