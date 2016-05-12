@@ -113,7 +113,10 @@ class Node(object):
         for peer in data_latest.peerinfo_json:
             duration = datetime.now(tz=pytz.utc) - datetime.fromtimestamp(peer['conntime'], tz=pytz.utc)
             duration_hours = duration.total_seconds() / 3600.0
-            bitnodes_url = 'https://bitnodes.21.co/nodes/' + peer['addr'].replace(':', '-')
+            port = peer['addr'].split(':')[-1]
+            bitnodes_url = None
+            if port == '8333':
+                bitnodes_url = 'https://bitnodes.21.co/nodes/' + peer['addr'].replace(':', '-')
             self.peers.append({
                 'duration_hours': duration_hours,
                 'address': peer['addr'],
