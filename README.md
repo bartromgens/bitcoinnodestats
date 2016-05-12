@@ -7,6 +7,10 @@ Stores node status snapshots in a sqlite database to preserve data after node re
 
 Based on [Django](https://www.djangoproject.com/), [python-bitcoinlib](https://github.com/petertodd/python-bitcoinlib), and [D3js](https://github.com/mbostock/d3).
 
+### Demo
+
+**[bitcoinnodestats.romgens.com](http://bitcoinnodestats.romgens.com)**
+
 ### Installation (Linux)
 
 ##### Download and Install
