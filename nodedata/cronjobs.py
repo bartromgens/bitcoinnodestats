@@ -1,6 +1,6 @@
 
 
-from nodedata.models import create_node_data
+from nodedata.models import create_data_record
 
 from django_cron import CronJobBase, Schedule
 
@@ -10,4 +10,4 @@ class UpdateNodeData(CronJobBase):
     code = 'nodedata.create_node_data'    # a unique code
 
     def do(self):
-        create_node_data()
+        create_data_record()

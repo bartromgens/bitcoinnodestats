@@ -15,8 +15,14 @@ from bitcoin.core import b2lx
 from bitcoinnodestats import local_settings
 
 
-def create_node_data():
+def create_data_record():
+    nodedata = create_node_data()
+    create_peers(nodedata.peerinfo_json)
+
+
+def create_node_data(save=True):
     nodedata = RawNodeData()
+    nodedata.datetime_created = timezone.now()
     try:
         proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
         nodedata.info_json = proxy.getinfo()
@@ -25,8 +31,14 @@ def create_node_data():
         nodedata.networkinfo_json = proxy.call('getnetworkinfo')
     except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
         print(error)
-    nodedata.save()
-    for peer_json in nodedata.peerinfo_json:
+        nodedata.node_up = False
+    if save:
+        nodedata.save()
+    return nodedata
+
+
+def create_peers(peerinfo_json):
+    for peer_json in peerinfo_json:
         port = peer_json['addr'].split(':')[-1]
         ip = peer_json['addr'].replace(':' + port, '')
         peers = Peer.objects.filter(ip=ip, port=port)
@@ -37,7 +49,6 @@ def create_node_data():
         peer.port = port
         peer.ip = ip
         peer.save()
-    return nodedata
 
 
 class RawNodeData(models.Model):
@@ -45,6 +56,7 @@ class RawNodeData(models.Model):
     nettotals_json = JSONField()
     peerinfo_json = JSONField()
     networkinfo_json = JSONField()
+    node_up = models.BooleanField(default=True, blank=False)
     datetime_created = models.DateTimeField(auto_now_add=True, blank=False)
 
     def __str__(self):
@@ -79,16 +91,16 @@ class RawNodeData(models.Model):
         return self.networkinfo_json['version']
 
     def get_version_str(self):
-        version_split = re.findall('..', self.get_version())
+        version_split = re.findall('..', str(self.get_version()))
         minor_version = version_split[1].strip("0")
         if minor_version == '':
             minor_version = '0'
         return 'v0.' + version_split[0] + '.' + minor_version
 
-    def get_subversion(self):
+    def get_subversion_str(self):
         if not self.networkinfo_json:
             print('Warning: networkinfo_json is empty')
-            return []
+            return 'unknown'
         return self.networkinfo_json['subversion'].strip("/")
 
     def get_time_millis(self):
@@ -130,33 +142,43 @@ class Peer(models.Model):
 class Node(object):
     def __init__(self):
         super().__init__()
-        data_latest = RawNodeData.get_latest_node_data()
-        self.version = data_latest.get_version_str()
-        self.subversion = data_latest.get_subversion()
-        self.block_count = data_latest.get_block_count()
-        self.peers = []
-        for peer in data_latest.peerinfo_json:
+        current_data = create_node_data(save=False)
+        self.version = current_data.get_version_str()
+        self.subversion = current_data.get_subversion_str()
+        self.block_count = current_data.get_block_count()
+        self.status = 'Status Unknown'
+        self.peers = Node.create_peerinfo(current_data.peerinfo_json)
+        self.status = Node.determine_status()
+
+    @staticmethod
+    def create_peerinfo(peerinfo_json):
+        peers = []
+        for peer in peerinfo_json:
             duration = datetime.now(tz=pytz.utc) - datetime.fromtimestamp(peer['conntime'], tz=pytz.utc)
             duration_hours = duration.total_seconds() / 3600.0
             port = peer['addr'].split(':')[-1]
             bitnodes_url = None
             if port == '8333':
                 bitnodes_url = 'https://bitnodes.21.co/nodes/' + peer['addr'].replace(':', '-')
-            self.peers.append({
+            peers.append({
                 'duration_hours': duration_hours,
                 'address': peer['addr'],
                 'bitnodes_url': bitnodes_url,
                 'received_mb': peer['bytesrecv'] /1024/1024,
                 'sent_mb': peer['bytessent'] /1024/1024,
             })
+        return peers
+
+    @staticmethod
+    def determine_status():
         try:
             proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
             bestblockhash = proxy.getbestblockhash()
-            self.best_block = proxy.call('getblock', b2lx(bestblockhash))
-            self.status = 'Up and running'
+            best_block = proxy.call('getblock', b2lx(bestblockhash))
+            return 'Up and running'
         except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
-            self.status = 'Error: Connection Refused'
             print(error)
+            return 'Error: Connection Refused'
 
 
 class NodeStats(object):
@@ -165,10 +187,12 @@ class NodeStats(object):
     def __init__(self):
         super().__init__()
         data_latest = RawNodeData.get_latest_node_data()
+        self.current_data = create_node_data(save=False)
         self.latest_data_point = data_latest.datetime_created
         self.first_data_point = RawNodeData.get_first_node_data().datetime_created
         self.deltatime_sec = (self.latest_data_point - self.first_data_point).total_seconds()
-        self.connection_count = data_latest.get_connection_count()
+        assert self.deltatime_sec > 0
+        self.connection_count = self.current_data.get_connection_count()
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
         self.generate_stats()
@@ -180,6 +204,7 @@ class NodeStats(object):
     def generate_stats(self):
         datapoints = RawNodeData.objects.all().order_by('datetime_created')
         datapoints = list(datapoints)
+        datapoints.append(self.current_data)
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
         json_points_sent = []
@@ -189,27 +214,30 @@ class NodeStats(object):
         json_connection_count = []
 
         time_bin_size_sec = self.deltatime_sec / self.max_points
+        assert time_bin_size_sec > 0
 
-        index = 1
-        while index < len(datapoints):
+        index = 0
+        while index < len(datapoints)-1:
+            index += 1
             current_point = datapoints[index-1]
             next_point = datapoints[index]
 
-            time_diff_sec = (next_point.get_time_millis() - current_point.get_time_millis()) / 1000
+            time_diff_sec = (next_point.datetime_created - current_point.datetime_created).total_seconds()
             while time_diff_sec < time_bin_size_sec and index < len(datapoints)-1:
                 index += 1
                 next_point = datapoints[index]
-                time_diff_sec = (next_point.get_time_millis() - current_point.get_time_millis()) / 1000
-            index += 1
+                time_diff_sec = (next_point.datetime_created - current_point.datetime_created).total_seconds()
             sent_diff_bytes = next_point.get_sent_bytes() - current_point.get_sent_bytes()
             received_diff_bytes = next_point.get_received_bytes() - current_point.get_received_bytes()
-            if sent_diff_bytes < 0 or received_diff_bytes < 0:
-                # server restarted, cannot use differences between current and next point
-                continue
-            self.total_sent_bytes += sent_diff_bytes
-            self.total_received_bytes += received_diff_bytes
-            datetime_utc = datetime.fromtimestamp(next_point.get_time_millis()/1000, tz=pytz.utc)
-            datetime_local = timezone.localtime(datetime_utc).strftime('%Y-%m-%d %H:%M:%S')
+            if sent_diff_bytes > 0 and received_diff_bytes > 0:
+                self.total_sent_bytes += sent_diff_bytes
+                self.total_received_bytes += received_diff_bytes
+            else:  # the node had a restart
+                print('node restarted')
+                sent_diff_bytes = 0
+                received_diff_bytes = 0
+
+            datetime_local = timezone.localtime(next_point.datetime_created).strftime('%Y-%m-%d %H:%M:%S')
             json_points_sent.append({
                 'datetime': datetime_local,
                 'y': self.total_sent_bytes / 1024/1024/1024,
@@ -228,7 +256,7 @@ class NodeStats(object):
             })
             json_connection_count.append({
                 'datetime': datetime_local,
-                'y': current_point.get_connection_count(),
+                'y': next_point.get_connection_count(),
             })
 
         json_data = {
