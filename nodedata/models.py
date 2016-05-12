@@ -135,13 +135,14 @@ class Node(object):
 
 
 class NodeStats(object):
-    time_bin_size_sec = 10*60
+    max_points = 60
 
     def __init__(self):
         super().__init__()
         data_latest = RawNodeData.get_latest_node_data()
         self.latest_data_point = data_latest.datetime_created
         self.first_data_point = RawNodeData.get_first_node_data().datetime_created
+        self.deltatime_sec = (self.latest_data_point - self.first_data_point).total_seconds()
         self.connection_count = data_latest.get_connection_count()
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
@@ -162,13 +163,15 @@ class NodeStats(object):
         json_points_download = []
         json_connection_count = []
 
+        time_bin_size_sec = self.deltatime_sec / self.max_points
+
         index = 1
         while index < len(datapoints):
             current_point = datapoints[index-1]
             next_point = datapoints[index]
 
             time_diff_sec = (next_point.get_time_millis() - current_point.get_time_millis()) / 1000
-            while time_diff_sec < self.time_bin_size_sec and index < len(datapoints)-1:
+            while time_diff_sec < time_bin_size_sec and index < len(datapoints)-1:
                 index += 1
                 next_point = datapoints[index]
                 time_diff_sec = (next_point.get_time_millis() - current_point.get_time_millis()) / 1000
