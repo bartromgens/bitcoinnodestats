@@ -162,15 +162,15 @@ class NodeStats(object):
         json_points_download = []
         json_connection_count = []
 
-        index = 0
-        while index < len(datapoints)-1:
-            next_point = datapoints[index+1]
-            current_point = datapoints[index]
+        index = 1
+        while index < len(datapoints):
+            current_point = datapoints[index-1]
+            next_point = datapoints[index]
 
             time_diff_sec = (next_point.get_time_millis() - current_point.get_time_millis()) / 1000
-            while time_diff_sec < self.time_bin_size_sec and index < len(datapoints)-2:
+            while time_diff_sec < self.time_bin_size_sec and index < len(datapoints)-1:
                 index += 1
-                next_point = datapoints[index + 1]
+                next_point = datapoints[index]
                 time_diff_sec = (next_point.get_time_millis() - current_point.get_time_millis()) / 1000
             index += 1
             sent_diff_bytes = next_point.get_sent_bytes() - current_point.get_sent_bytes()
@@ -180,7 +180,7 @@ class NodeStats(object):
                 continue
             self.total_sent_bytes += sent_diff_bytes
             self.total_received_bytes += received_diff_bytes
-            datetime_utc = datetime.fromtimestamp(current_point.get_time_millis()/1000, tz=pytz.utc)
+            datetime_utc = datetime.fromtimestamp(next_point.get_time_millis()/1000, tz=pytz.utc)
             datetime_local = timezone.localtime(datetime_utc).strftime('%Y-%m-%d %H:%M:%S')
             json_points_sent.append({
                 'datetime': datetime_local,
