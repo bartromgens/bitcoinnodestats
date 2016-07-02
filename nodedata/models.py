@@ -31,6 +31,9 @@ def create_node_data(save=True):
     except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
         print(error)
         nodedata.node_up = False
+    except FileNotFoundError as error:
+        print(error)
+        nodedata.node_up = False
     if save:
         nodedata.save()
     else:
@@ -180,6 +183,9 @@ class Node(object):
         except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
             print(error)
             return 'Error: Connection Refused'
+        except FileNotFoundError as error:
+            print(error)
+            return 'Error: bitcoin config file not found'
 
 
 class NodeStats(object):
