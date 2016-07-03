@@ -245,8 +245,9 @@ class NodeStats(object):
                     received_diff_bytes += received_diff_bytes_step
                     self.total_sent_bytes += sent_diff_bytes_step
                     self.total_received_bytes += received_diff_bytes_step
-                else:  # the node had a restart
-                    print('node restarted')
+                else:  # the node had a restart or was down
+                    if next_point.node_up:
+                        print('node restarted around ' + str(next_point.datetime_created))
                 if time_diff_sec > time_bin_size_sec:
                     break
                 index += 1
