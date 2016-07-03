@@ -1,3 +1,6 @@
+from datetime import datetime
+import pytz
+
 from django.views.generic import TemplateView
 from django.http.response import HttpResponseRedirect
 
@@ -9,7 +12,11 @@ class HomeView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['stats'] = NodeStats()
+        context['stats'] = NodeStats(
+            bin_size_hour=24,
+            date_begin=datetime(2009, 1, 3),
+            date_end=datetime.now(tz=pytz.utc)
+        )
         context['node'] = Node()
         return context
 

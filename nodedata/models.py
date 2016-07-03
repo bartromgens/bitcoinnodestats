@@ -66,13 +66,13 @@ class RawNodeData(models.Model):
 
     def get_sent_bytes(self):
         if not self.nettotals_json:
-            print('Warning: nettotals_json is empty')
+            # print('Warning: nettotals_json is empty')
             return 0
         return self.nettotals_json['totalbytessent']
 
     def get_received_bytes(self):
         if not self.nettotals_json:
-            print('Warning: nettotals_json is empty')
+            # print('Warning: nettotals_json is empty')
             return 0
         return self.nettotals_json['totalbytesrecv']
 
@@ -187,9 +187,8 @@ class Node(object):
 
 
 class NodeStats(object):
-    max_points = 60
 
-    def __init__(self):
+    def __init__(self, bin_size_hour=1, date_begin=datetime(2009, 1, 3), date_end=datetime.now(tz=pytz.utc)):
         super().__init__()
         data_latest = RawNodeData.get_latest_node_data()
         self.current_data = create_node_data(save=False)
@@ -200,7 +199,7 @@ class NodeStats(object):
         self.connection_count = self.current_data.get_connection_count()
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
-        self.generate_stats()
+        self.generate_stats(bin_size_hour, date_begin, date_end)
         self.sent_gb = self.total_sent_bytes/1024/1024/1024
         self.received_gb = self.total_received_bytes/1024/1024/1024
         self.share_ratio = 0.0
@@ -208,9 +207,9 @@ class NodeStats(object):
             self.share_ratio = self.sent_gb / self.received_gb
         self.n_data_points = RawNodeData.objects.count()
 
-    def generate_stats(self):
+    def generate_stats(self, bin_size_hour, date_begin, date_end):
         print('generate_stats: START')
-        datapoints = RawNodeData.objects.all().order_by('datetime_created')
+        datapoints = RawNodeData.objects.filter(datetime_created__range=[date_begin, date_end]).order_by('datetime_created')
         datapoints = list(datapoints)
         print('n datapoints: ' + str(len(datapoints)))
         datapoints.append(self.current_data)
@@ -222,7 +221,7 @@ class NodeStats(object):
         json_points_download = []
         json_connection_count = []
 
-        time_bin_size_sec = self.deltatime_sec / self.max_points
+        time_bin_size_sec = bin_size_hour * 60 * 60
         assert time_bin_size_sec > 0
 
         index = 0
