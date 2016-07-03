@@ -47,8 +47,6 @@ def create_peers(peerinfo_json):
         ip = peer_json['addr'].replace(':' + port, '')
         peers = Peer.objects.filter(ip=ip, port=port)
         if not peers.exists():
-            peer = peers[0]
-        else:
             peer = Peer()
             peer.port = port
             peer.ip = ip
@@ -211,8 +209,10 @@ class NodeStats(object):
         self.n_data_points = RawNodeData.objects.count()
 
     def generate_stats(self):
+        print('generate_stats: START')
         datapoints = RawNodeData.objects.all().order_by('datetime_created')
         datapoints = list(datapoints)
+        print('n datapoints: ' + str(len(datapoints)))
         datapoints.append(self.current_data)
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
@@ -230,21 +230,28 @@ class NodeStats(object):
             index += 1
             current_point = datapoints[index-1]
             next_point = datapoints[index]
+            sent_diff_bytes = 0.0
+            received_diff_bytes = 0.0
 
             time_diff_sec = (next_point.datetime_created - current_point.datetime_created).total_seconds()
-            while time_diff_sec < time_bin_size_sec and index < len(datapoints)-1:
-                index += 1
+            while index < len(datapoints)-1:
                 next_point = datapoints[index]
+                previous_point = datapoints[index-1]
                 time_diff_sec = (next_point.datetime_created - current_point.datetime_created).total_seconds()
-            sent_diff_bytes = next_point.get_sent_bytes() - current_point.get_sent_bytes()
-            received_diff_bytes = next_point.get_received_bytes() - current_point.get_received_bytes()
-            if sent_diff_bytes > 0 and received_diff_bytes > 0:
-                self.total_sent_bytes += sent_diff_bytes
-                self.total_received_bytes += received_diff_bytes
-            else:  # the node had a restart
-                print('node restarted')
-                sent_diff_bytes = 0
-                received_diff_bytes = 0
+                sent_diff_bytes_step = next_point.get_sent_bytes() - previous_point.get_sent_bytes()
+                received_diff_bytes_step = next_point.get_received_bytes() - previous_point.get_received_bytes()
+                if sent_diff_bytes_step > 0 and received_diff_bytes_step > 0:
+                    sent_diff_bytes += sent_diff_bytes_step
+                    received_diff_bytes += received_diff_bytes_step
+                    self.total_sent_bytes += sent_diff_bytes_step
+                    self.total_received_bytes += received_diff_bytes_step
+                else:  # the node had a restart
+                    print('node restarted')
+                    sent_diff_bytes = 0.0
+                    received_diff_bytes = 0.0
+                if time_diff_sec > time_bin_size_sec:
+                    break
+                index += 1
 
             datetime_local = timezone.localtime(next_point.datetime_created).strftime('%Y-%m-%d %H:%M:%S')
             json_points_sent.append({
@@ -312,6 +319,7 @@ class NodeStats(object):
             'unit': 'connections'
         }
         NodeStats.write_json(json_data, 'connections.json')
+        print('generate_stats: END')
 
     @staticmethod
     def write_json(json_data, filename):
