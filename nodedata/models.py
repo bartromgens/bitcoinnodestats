@@ -46,7 +46,7 @@ def create_peers(peerinfo_json):
         port = peer_json['addr'].split(':')[-1]
         ip = peer_json['addr'].replace(':' + port, '')
         peers = Peer.objects.filter(ip=ip, port=port)
-        if peers.exists():
+        if not peers.exists():
             peer = peers[0]
         else:
             peer = Peer()
