@@ -50,9 +50,9 @@ def create_peers(peerinfo_json):
             peer = peers[0]
         else:
             peer = Peer()
-        peer.port = port
-        peer.ip = ip
-        peer.save()
+            peer.port = port
+            peer.ip = ip
+            peer.save()
 
 
 class RawNodeData(models.Model):
