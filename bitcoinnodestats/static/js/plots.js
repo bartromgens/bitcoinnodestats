@@ -1,7 +1,7 @@
 
 var create_plot = function(json_filepath, title) {
     // Set the dimensions of the canvas / graph
-    plot_width = parseInt(d3.select("body").select("#plot").style('width'), 10);
+    var plot_width = parseInt(d3.select("body").select("#plot").style('width'), 10);
     var margin = {top: 60, right: 30, bottom: 50, left: 60};
     var width = plot_width - margin.left - margin.right;
     var height = Math.min(plot_width/2.0 - margin.top - margin.bottom, 300);
