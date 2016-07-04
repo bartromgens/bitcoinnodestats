@@ -1,0 +1,29 @@
+{% load staticfiles %}
+
+  <div class="row" align="left">
+
+    <div class="col-sm-2">
+      <label for="selectInterval">Interval</label>
+      <select id="selectInterval" class="form-control">
+        <option>1 hour</option>
+        <option>2 hours</option>
+        <option>4 hours</option>
+        <option>6 hours</option>
+        <option>12 hours</option>
+        <option>1 day</option>
+        <option>1 week</option>
+        <option>1 month</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label for="reportrange">Date range</label>
+      <div id="reportrange" class="form-control pull-right">
+        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+        <span></span> <b class="caret"></b>
+      </div>
+
+      <script src="{% static 'js/daterangepicker.js' %}" type="text/javascript"></script>
+    </div>
+
+  </div>
