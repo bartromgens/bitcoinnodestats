@@ -11,70 +11,11 @@
 
 <div class="container">
 
-  <div class="row" align="center">
-    <div class="col-sm-3">
-      <h5> {{ node.status }}</h5>
-    </div>
-    <div class="col-sm-2">
-      <h5>block {{ node.block_count }}</h5>
-    </div>
-    <div class="col-sm-2">
-      <h5>{{ stats.connection_count }} peers</h5>
-    </div>
-    <div class="col-sm-2">
-      <h5>{{ stats.sent_gb|floatformat:2 }} GiB <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></h5>
-    </div>
-    <div class="col-sm-2">
-      <h5>{{ stats.received_gb|floatformat:2 }} GiB <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></h5>
-    </div>
-    <div class="col-sm-1">
-      <h5>{{ stats.share_ratio|floatformat:2 }}</h5>
-    </div>
-  </div>
+  {% include "status_bar.html" %}
 
   <hr/>
 
-  <div class="row" align="center">
-
-    <div class="col-sm-2">
-      <h6>Date range:</h6>
-    </div>
-
-    <div class="col-sm-3">
-
-      <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%">
-          <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
-          <span></span> <b class="caret"></b>
-      </div>
-
-      <script type="text/javascript">
-      $(function() {
-
-          function cb(start, end) {
-              $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-              console.log(start.format('YYYY-MM-DD'));
-              console.log(end.format('YYYY-MM-DD'));
-              <!--window.location.href = '/?date_begin=' + start.format('YYYY-MM-DD');-->
-          }
-          cb(moment().subtract(29, 'days'), moment());
-
-          $('#reportrange').daterangepicker({
-              ranges: {
-                 'Today': [moment(), moment()],
-                 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                 'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                 'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                 'This Month': [moment().startOf('month'), moment().endOf('month')],
-                 'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-              }
-          }, cb);
-
-      });
-      </script>
-
-    </div>
-
-  </div>
+  {% include "input.html" %}
 
   <hr/>
 
@@ -100,13 +41,9 @@
 
   <hr/>
 
-  <div class="row" align="center">
-    <div class="col-md-12">
-      <font>{{ stats.n_data_points }} status records, </font>
-      <font>since {{ stats.first_data_point|date:"DATE_FORMAT" }}, </font>
-      <font>last update on {{ stats.latest_data_point|date:"DATETIME_FORMAT" }}</font>
-    </div>
-  </div>
+  {% include "footer.html" %}
+
+  <hr/>
 
 </div>
 

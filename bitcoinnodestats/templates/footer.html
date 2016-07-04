@@ -1,0 +1,7 @@
+  <div class="row" align="center">
+    <div class="col-md-12">
+      <font>{{ stats.n_data_points }} status records, </font>
+      <font>since {{ stats.first_data_point|date:"DATE_FORMAT" }}, </font>
+      <font>last update on {{ stats.latest_data_point|date:"DATETIME_FORMAT" }}</font>
+    </div>
+  </div>
