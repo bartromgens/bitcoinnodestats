@@ -13,11 +13,15 @@
 
   {# Load CSS and JavaScript #}
   {% bootstrap_css %}
-
   <link rel="stylesheet" href="{% static 'css/custom.css' %}" type="text/css">
 
   <script src="{% bootstrap_jquery_url %}" type="text/javascript"></script>
   {% bootstrap_javascript %}
+  <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+  <!-- Include Date Range Picker -->
+  <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+  <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 
   {% block headcontent %}{% endblock %}
 
