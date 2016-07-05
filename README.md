@@ -48,9 +48,3 @@ Note that it will takes some time before enough data is stored for the charts.
 `BITCOIN_CONF_FILE` is the location of your 'bitcoin.conf', only needed if it is not in the default location. 
 
 `DEBUG` should be set to False on a production server.  
-
-### TODO
-- Users can change the plot date range
-- Users can change plot detail
-- Responsive plots (rescale on window resize)
-- ...
