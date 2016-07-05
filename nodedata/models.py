@@ -192,6 +192,7 @@ class NodeStats(object):
         super().__init__()
         data_latest = RawNodeData.get_latest_node_data()
         self.current_data = create_node_data(save=False)
+        self.first_data_point = RawNodeData.get_first_node_data().datetime_created
         self.latest_data_point = data_latest.datetime_created
         self.connection_count = self.current_data.get_connection_count()
         self.total_sent_bytes = 0
