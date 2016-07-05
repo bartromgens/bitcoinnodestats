@@ -10,9 +10,9 @@ Requires Python 3.3+.
 **[bitcoinnodestats.romgens.com](http://bitcoinnodestats.romgens.com)**
 
 ### Features
-- Store node status at given time intervals to sqlite database (Django and cron)
-- Visualise data in charts and tables (D3js and bootstrap)
 - Current node status overview
+- Charts of peer count, upload and download history
+- Save node status snapshots at given time intervals to a sqlite database
 
 ### Installation (Linux)
 
@@ -29,8 +29,8 @@ Install in a local environment (creates a Python 3 virtualenv and a sqlite datab
 ##### Schedule status snapshots (cronjob)
 Create a cronjob to record node status every n minutes,  
 ```$ crontab -e```  
-To create a status record every 10 minutes, add the following line and replace the placeholders with your project location,  
-```*/10 * * * * source /home/<user>/<projectdir>/env/bin/activate && python /home/<user>/<projectdir>/manage.py runcrons > /home/<user>/<projectdir>/cronjob.log 2>&1```  
+To create a status record every hour, add the following line and replace the placeholders with your project location,  
+```0 * * * * source /home/<user>/<projectdir>/env/bin/activate && python /home/<user>/<projectdir>/manage.py runcrons > /home/<user>/<projectdir>/cronjob.log 2>&1```  
 Warning: you may need to define `SHELL=/bin/bash` at the top of your crontab for the command to work. 
 
 Please create a ticket if you have any problems with the installation.
