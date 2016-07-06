@@ -19,6 +19,7 @@
 
   <hr/>
 
+  {% if stats %}
   <script src="//d3js.org/d3.v3.min.js" type="text/javascript"></script>
 
   <div class="row">
@@ -29,6 +30,9 @@
   </div>
 
   <script src="{% static 'js/plots.js' %}" type="text/javascript"></script>
+  {% else %}
+    <h6>No data points found to create charts. Reload the page to generate some initial data and make sure you have a cronjob configured to create status snapshots.</h6>
+  {% endif %}
 
   <hr/>
 

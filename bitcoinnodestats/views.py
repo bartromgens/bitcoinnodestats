@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from django.http.response import HttpResponseRedirect
 
 from nodedata.models import RawNodeData, NodeStats, Node
+from nodedata.models import create_data_record
 
 
 class HomeView(TemplateView):
@@ -23,11 +24,22 @@ class HomeView(TemplateView):
             bin_size_hour = int(self.request.GET['bin_size_hour'])
 
         context = super().get_context_data(**kwargs)
-        context['stats'] = NodeStats(
-            bin_size_hour=bin_size_hour,
-            date_begin=date_begin,
-            date_end=date_end
-        )
+
+        # generate a new data record on every page load until there are 10 records available for plotting
+        if RawNodeData.objects.count() < 10:
+            create_data_record()
+
+        if RawNodeData.objects.count() > 1:
+            print('node data exists')
+            stats = NodeStats(
+                bin_size_hour=bin_size_hour,
+                date_begin=date_begin,
+                date_end=date_end
+            )
+        else:
+            stats = None
+
+        context['stats'] = stats
         context['node'] = Node()
         return context
 

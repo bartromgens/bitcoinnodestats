@@ -188,7 +188,7 @@ class Node(object):
 
 class NodeStats(object):
 
-    def __init__(self, bin_size_hour=1, date_begin=datetime(2009, 1, 3), date_end=datetime.now(tz=pytz.utc)):
+    def __init__(self, bin_size_hour=1, date_begin=datetime(2009, 1, 3), date_end=datetime.now(tz=pytz.utc).date()):
         super().__init__()
         data_latest = RawNodeData.get_latest_node_data()
         self.current_data = create_node_data(save=False)
@@ -222,6 +222,8 @@ class NodeStats(object):
         time_bin_size_sec = bin_size_hour * 60 * 60
         assert time_bin_size_sec > 0
 
+        total_time_range = self.latest_data_point - self.first_data_point
+
         index = 0
         while index < len(datapoints)-1:
             index += 1
@@ -231,7 +233,7 @@ class NodeStats(object):
             received_diff_bytes = 0.0
 
             time_diff_sec = (next_point.datetime_created - current_point.datetime_created).total_seconds()
-            while index < len(datapoints)-1:
+            while index < len(datapoints)-1 and total_time_range.seconds > time_bin_size_sec:
                 next_point = datapoints[index]
                 previous_point = datapoints[index-1]
                 time_diff_sec = (next_point.datetime_created - current_point.datetime_created).total_seconds()
