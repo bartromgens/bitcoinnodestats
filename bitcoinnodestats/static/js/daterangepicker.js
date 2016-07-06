@@ -54,11 +54,11 @@ $(function() {
         ranges: {
             'Today': [moment(), moment().add(1, 'days')],
             'Yesterday': [moment().subtract(1, 'days'), moment()],
-            'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-            'This Month': [moment().startOf('month'), moment().endOf('month')],
-            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-            'All': [moment('2009-01-03', dateFormatInput), moment()]
+            'Last 7 Days': [moment().subtract(6, 'days'), moment().add(1, 'days')],
+            'Last 30 Days': [moment().subtract(29, 'days'), moment().add(1, 'days')],
+            'This Month': [moment().startOf('month'), moment().endOf('month').add(1, 'days')],
+            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month').add(1, 'days')],
+            'All': [moment('2009-01-03', dateFormatInput), moment().add(1, 'days')]
         },
         autoApply: true,
         opens: 'right',
