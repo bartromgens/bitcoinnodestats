@@ -6,18 +6,17 @@ A basic Bitcoin node status and statistics web application.
 Based on [Django](https://www.djangoproject.com/), [python-bitcoinlib](https://github.com/petertodd/python-bitcoinlib),  [D3js](https://github.com/mbostock/d3), and [bootstrap](https://github.com/twbs/bootstrap).  
 Requires Python 3.3+.
 
-### Demo
+## Demo
 
 **[bitcoinnodestats.romgens.com](http://bitcoinnodestats.romgens.com)**
 
-### Features
+## Features
 - Current node status overview
 - Charts of peer count, upload and download history
-- Save node status snapshots at given time intervals to a sqlite database
 
-### Installation (Linux)
+## Installation (Linux)
 
-##### Download and Install
+### Download and Install
 Get the code and enter the project directory,  
 ```
 $ git clone https://github.com/bartromgens/bitcoinnodestats.git
@@ -25,9 +24,11 @@ $ cd bitcoinnodestats
 ```
 
 Install in a local environment (creates a Python 3 virtualenv and a sqlite database),  
-```$ ./install.sh```
+```
+$ ./install.sh
+```
 
-##### Schedule status snapshots (cronjob)
+### Schedule status snapshots (cronjob)
 Create a cronjob to record node status every n minutes,  
 ```
 $ crontab -e
@@ -40,7 +41,7 @@ Warning: you may need to define `SHELL=/bin/bash` at the top of your crontab for
 
 Please create a [new issue](https://github.com/bartromgens/bitcoinnodestats/issues/new) if you have any problems with the installation.
 
-### Run
+## Run
 Run the simple Django web server (not for production) for a given IP and port,  
 ```
 $ ./run.sh 127.0.0.1:8000
@@ -48,7 +49,7 @@ $ ./run.sh 127.0.0.1:8000
 
 Visit http://127.0.0.1:8000 in your browser to view your node stats.
 
-### Configuration
+## Configuration
 `bitcoinnodestats/local_settings.py` contains some local settings that you may want or need to change if you run it on a production server.
 
 `BITCOIN_CONF_FILE` is the location of your `bitcoin.conf`, only needed if it is not in the default location. 

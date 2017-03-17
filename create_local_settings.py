@@ -29,7 +29,7 @@ def replace(source_file_path, pattern, substring):
             for line in source_file:
                 target_file.write(line.replace(pattern, substring))
     os.remove(source_file_path)
-    shutil.move(target_file_path, source_file_path)
+    shutil.copy(target_file_path, source_file_path)
 
 
 def generate_random_secret_key():
