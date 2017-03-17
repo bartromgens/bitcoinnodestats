@@ -35,3 +35,6 @@ MEDIA_URL = '/static/media/'
 # python-bitcoinlib will try to find it in the default location
 # you only need to set this if you have a special location for your bitcoin config
 BITCOIN_CONF_FILE = None
+
+# stores all peer info if True which may take up a lot of space
+SAVE_PEER_INFO = False

@@ -22,6 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Application definition
 
 INSTALLED_APPS = [
+    'bitcoinnodestats',
+    'nodedata',
+    'bootstrap3',
+    'django_cron',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,10 +33,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'debug_toolbar',
-    'bootstrap3',
-    'django_cron',
-    'bitcoinnodestats',
-    'nodedata',
 ]
 
 MIDDLEWARE_CLASSES = [

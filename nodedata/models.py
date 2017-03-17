@@ -6,28 +6,32 @@ import pytz
 
 from django.db import models
 from django.utils import timezone
+from django.conf import settings
 
 from jsonfield import JSONField
 
 import bitcoin.rpc
 from bitcoin.core import b2lx
 
-from bitcoinnodestats import local_settings
+from nodedata.settings import SAVE_PEER_INFO
 
 
 def create_data_record():
     nodedata = create_node_data()
     create_peers(nodedata.peerinfo_json)
+    if not SAVE_PEER_INFO:
+        nodedata.peerinfo_json = []
+        nodedata.save()
 
 
 def create_node_data(save=True):
     nodedata = RawNodeData()
     try:
-        proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
+        proxy = bitcoin.rpc.Proxy(btc_conf_file=settings.BITCOIN_CONF_FILE)
         nodedata.info_json = proxy.getinfo()
         nodedata.nettotals_json = proxy.call('getnettotals')
-        nodedata.peerinfo_json = proxy.call('getpeerinfo')
         nodedata.networkinfo_json = proxy.call('getnetworkinfo')
+        nodedata.peerinfo_json = proxy.call('getpeerinfo')
     except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
         print(error)
         nodedata.node_up = False
@@ -174,7 +178,7 @@ class Node(object):
     @staticmethod
     def determine_status():
         try:
-            proxy = bitcoin.rpc.Proxy(btc_conf_file=local_settings.BITCOIN_CONF_FILE)
+            proxy = bitcoin.rpc.Proxy(btc_conf_file=settings.BITCOIN_CONF_FILE)
             bestblockhash = proxy.getbestblockhash()
             proxy.call('getblock', b2lx(bestblockhash))
             return 'Up and running'
@@ -207,9 +211,11 @@ class NodeStats(object):
 
     def generate_stats(self, bin_size_hour, date_begin, date_end):
         print('generate_stats: START')
+        # print('date begin: ' + str(date_begin))
+        # print('date begin: ' + str(date_end))
+        # print('bin_size_hour: ' + str(bin_size_hour))
         datapoints = RawNodeData.objects.filter(datetime_created__range=[date_begin, date_end]).order_by('datetime_created')
         datapoints = list(datapoints)
-        print('n datapoints: ' + str(len(datapoints)))
         datapoints.append(self.current_data)
         self.total_sent_bytes = 0
         self.total_received_bytes = 0
@@ -233,7 +239,9 @@ class NodeStats(object):
             received_diff_bytes = 0.0
 
             time_diff_sec = (next_point.datetime_created - current_point.datetime_created).total_seconds()
-            while index < len(datapoints)-1 and total_time_range.seconds > time_bin_size_sec:
+            first = True
+            while index < len(datapoints)-1 and (total_time_range.seconds > time_bin_size_sec or first):
+                first = False
                 next_point = datapoints[index]
                 previous_point = datapoints[index-1]
                 time_diff_sec = (next_point.datetime_created - current_point.datetime_created).total_seconds()
@@ -321,6 +329,6 @@ class NodeStats(object):
 
     @staticmethod
     def write_json(json_data, filename):
-        filepath = os.path.join(local_settings.MEDIA_ROOT, filename)
+        filepath = os.path.join(settings.MEDIA_ROOT, filename)
         with open(filepath, 'w') as fileout:
             json.dump(json_data, fileout, indent=4, sort_keys=True)
