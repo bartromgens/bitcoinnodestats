@@ -1,7 +1,7 @@
-python-bitcoinlib==0.5.1
-Django==1.9.6
-django-cron==0.4.6
-jsonfield==1.0.3
-django-debug-toolbar==1.4.0
-django-bootstrap3==7.0.1
-pytz==2016.4
+python-bitcoinlib==0.7.0
+Django==1.10.6
+django-cron==0.5.0
+jsonfield==2.0.1
+django-bootstrap3==8.2.1
+pytz==2016.7
+django-debug-toolbar
