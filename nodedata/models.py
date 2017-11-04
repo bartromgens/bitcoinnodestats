@@ -184,7 +184,7 @@ class Node(object):
             return 'Up and running'
         except (ConnectionRefusedError, bitcoin.rpc.JSONRPCError) as error:
             print(error)
-            return 'Error: Connection Refused'
+            return 'Error: Connection Refused. ' + str(error['message'])
         except FileNotFoundError as error:
             print(error)
             return 'Error: bitcoin config file not found'
