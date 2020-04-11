@@ -1,5 +1,5 @@
 # bitcoinnodestats
-[![Dependency Status](https://gemnasium.com/badges/github.com/bartromgens/bitcoinnodestats.svg)](https://gemnasium.com/github.com/bartromgens/bitcoinnodestats)
+**NOTE: this project is not maintainted.**
 
 A basic Bitcoin node status and statistics web application.
 
