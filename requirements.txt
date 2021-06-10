@@ -1,5 +1,5 @@
 python-bitcoinlib==0.8.0
-Django==1.11.7
+Django==2.2.24
 django-cron==0.5.0
 jsonfield==2.0.2
 django-bootstrap3==9.1.0
